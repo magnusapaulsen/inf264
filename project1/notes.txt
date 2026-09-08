@@ -28,3 +28,42 @@ In order to calcualte which split gives us the most information gain we have to 
     2. Calculate the conditional entropy of the subsets: H(y|x)
     3. Calculate the information gain: H(x) - H(y|x)
 This will be the same if we use the gini index.
+
+On model selection (validation)
+The lecture mentions a few ways of doing this:
+    - Hold-out validation (normal train_test_split)
+    - Sample re-use methods: Cross validation, bootstrap
+    - Analytical approximations
+The two things that sound most reasonable is:
+    - Hold-out validation
+    - k-fold cross validation
+
+Hold-out validation
+We split off about 15% of our dataset for model selection.
+Our dataset has 7032 samples, so we would be using ~1055 samples for model selection.
+We will be using ~1055 for testing, which leaves ~4922 for training.
+So we will only be training the tree on 70% of our data.
+The good thing about it is that it is really easy and I already know how to do it.
+
+k-fold cross validation
+We divide the whole dataset into k subsets.
+For every subset, we train a decision tree on all the other subsets and evaluate on that subset.
+This will give us k experiments.
+We combine the performance measures of all our experiments.
+We will still have to split off 15% for testing.
+We will be left with k subsets of size (5977/k).
+Smaller subsets for training could mean that we lack information.
+However, on the whole we still train on more data.
+We are able to use all 85% for training, just in different experiments.
+
+On choosing hyperparameters.
+It there are way to many hyperparameters to choose.
+We need a strategy to find the best ones.
+
+Grid search vs Randomized search
+
+Grid search searches pre-set points.
+Easy, but might miss the best settings for each hyperparameter if they do not fall on the grid.
+
+Randomized search searches within a pre-set range, a set number of times.
+More complex, but has a better chance of finding optimal settings for hyperparameters.
