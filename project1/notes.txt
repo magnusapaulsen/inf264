@@ -1,0 +1,30 @@
+numpy, sklearn, matplotlib
+
+We will use the median to split our decision tree.
+For each split, we create two new branches (subsets of the dataset).
+We then split each of the subsets into sub-subsets, etc.
+This will get expensive fast as the number of calculations grows at 19 * 2**n.
+That is why we need max_depth and stopping conditions.
+
+We should let the user decide whether to use entropy or the gini index as impurity measures.
+
+The user should be able to set a max_depth. The decision tree should not split deeper after this point.
+When we hit max_depth we return a leaf node with the most common label.
+
+Building a tree is basically just a DFS search:
+    1. We check base case.
+    2. We split root.
+    3. We go into the first child.
+    4. We check base case for first child.
+    5. We split the first child.
+    (...)
+    n. We go into the second child.
+    n+1. We split the second child.
+    etc.
+
+On calculating entropy and information gain
+In order to calcualte which split gives us the most information gain we have to do the following:
+    1. Calculate the entropy of the current dataset: H(x)
+    2. Calculate the conditional entropy of the subsets: H(y|x)
+    3. Calculate the information gain: H(x) - H(y|x)
+This will be the same if we use the gini index.

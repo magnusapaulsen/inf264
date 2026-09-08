@@ -1,0 +1,7 @@
+This is what the report should be:
+
+A PDF report containing an explanation of your approach, design choices and results to help
+us understand how your particular implementation works. Describe your approach and design
+choices in detail. This include choice of model selection procedure, hyperparameters, scoring
+metric, etc. You can include figures and snippets of code in the PDF to elaborate any point you
+are trying to make.
