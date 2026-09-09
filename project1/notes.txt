@@ -67,3 +67,23 @@ Easy, but might miss the best settings for each hyperparameter if they do not fa
 
 Randomized search searches within a pre-set range, a set number of times.
 More complex, but has a better chance of finding optimal settings for hyperparameters.
+
+Which hyperparameters should you tune?
+    - criterion
+    - max_depth
+Which values should you test for each hyperparameter?
+    - criterion has two values ("entropy", "gini")
+    - max_depth should be something like range(1, 20) (log2 of 7032 is ~13)
+        the best setting should be smaller than 13 though, something like 8 maybe?
+Which model selection method should you use?
+    - 5-fold cross validation
+        using normal hold-out validation will be less stable
+        we split data into 5 subset
+        we train each of the 5 models on 4/5 subsets and test on the 5th
+        we take the mean accuracy score of all 5 models
+        this represents the hyperparameter combination
+        we pick the best combination and train a model on 5/5 subsets using that combination
+Which performance measure should you use for model selection?
+    The classes in our dataset are not balanced (0: 5163, 1: 1869)
+How do you ensure that your model selection proecess is fair and unbiased?
+How can you ensure reproducibilitu of your results?
