@@ -85,5 +85,17 @@ Which model selection method should you use?
         we pick the best combination and train a model on 5/5 subsets using that combination
 Which performance measure should you use for model selection?
     The classes in our dataset are not balanced (0: 5163, 1: 1869)
+    This means that a model which guesses 0 every time will have a ~75% accuracy.
+    Accuracy is therefore a bad performance measure.
+    What about precision, recall and F1-score?
+        - Precision: (TP/(TP+FP))
+        - Recall: (TP/(TP+FN))
+        - F1: 2*((precision*recall)/(precision+recall))
+    False negatives are costly, false positives have a cost, but not as high.
+    Precision focuses on how many predicted positives were true positives.
+    Recall focuses on how many of the true positives we caught.
+    F1 tries to balance both of these.
+    Therefore we should do F1.
+
 How do you ensure that your model selection proecess is fair and unbiased?
 How can you ensure reproducibilitu of your results?
