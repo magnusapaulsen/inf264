@@ -133,15 +133,22 @@ class DecisionTree:
         return self.entropy(y) - self.conditional_entropy(y_left, y_right)
             
 
-X, y = generate_synthetic_dataset(
-    n_samples=100,
-    n_features=19,
-    random_state=67
-)
+if __name__ == '__main__':
+    X, y = generate_synthetic_dataset(
+        n_samples=100,
+        n_features=19,
+        weights=[0.74,0.16],
+        random_state=67
+    )
 
-dt = DecisionTree(criterion="entropy", max_depth=3)
-dt.fit(X, y)
-dt.show_tree()
-y_pred = dt.predict(X)
-print(y_pred)
-print(y)
+    dt = DecisionTree(criterion="entropy", max_depth=3)
+    dt.fit(X, y)
+    dt.show_tree()
+    y_pred = dt.predict(X)
+
+    from sklearn.metrics import f1_score, fbeta_score, balanced_accuracy_score
+
+    print(f"F1-Score: {f1_score(y, y_pred)}")
+    print(f"F0.5-Score: {fbeta_score(y, y_pred, beta=0.5)}")
+    print(f"F2-Score: {fbeta_score(y, y_pred, beta=2)}")
+    print(f"Balanced Accuracy Score: {balanced_accuracy_score(y, y_pred)}")

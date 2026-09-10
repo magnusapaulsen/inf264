@@ -94,8 +94,13 @@ Which performance measure should you use for model selection?
     False negatives are costly, false positives have a cost, but not as high.
     Precision focuses on how many predicted positives were true positives.
     Recall focuses on how many of the true positives we caught.
-    F1 tries to balance both of these.
-    Therefore we should do F1.
-
-How do you ensure that your model selection proecess is fair and unbiased?
-How can you ensure reproducibilitu of your results?
+    F1 tries to balance both of these equally.
+    Are they equally important?
+    If not we could do F0.5 or F2
+    We could also use balanced_accuracy from the last homework.
+How do you ensure that your model selection process is fair and unbiased?
+    We ensure this by keeping the validation subset separate from the training subset.
+    We probably need to say more than this.
+How can you ensure reproducibility of your results?
+    We ensure this by using a set seed for the splitting of data, which should give us the same model each time when training.
+    This is because training a decision tree is deterministic, given the data and ordering is the same.
