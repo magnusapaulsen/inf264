@@ -3,6 +3,7 @@ Decision tree with Iterative Dichotomizer 3 (ID3) learning algorithm.
 """
 
 from synthetic_dataset import generate_synthetic_dataset
+from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
 
 class Node:
@@ -18,10 +19,10 @@ class Node:
         return self.value is not None
         
 
-class DecisionTree:
+class DecisionTree(BaseEstimator, ClassifierMixin):
     def __init__(self, criterion="entropy", max_depth=None):
         self.criterion = criterion
-        self.max_depth = np.inf if max_depth is None else max_depth
+        self.max_depth = max_depth
 
     def _split(self, X, y, depth):
         """ Helper function which actually does the splitting"""
@@ -73,7 +74,12 @@ class DecisionTree:
 
     def fit(self, X, y):
         """ Kicks off the buidling of the decision tree """
+        if self.max_depth == None:
+            self.max_depth = np.inf
+
         self.root = self._split(X, y, 0)
+
+        return self
 
     def predict(self, X):
         """
