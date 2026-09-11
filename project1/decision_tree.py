@@ -5,6 +5,7 @@ Decision tree with Iterative Dichotomizer 3 (ID3) learning algorithm.
 from synthetic_dataset import generate_synthetic_dataset
 from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Node:
     def __init__(self, feature, threshold, left=None, right=None, value=None, root=None):
@@ -55,6 +56,13 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
                 best_feature = feature
                 best_threshold = median
 
+        # Check for 0 information gain
+        if best_IG <= 0:
+            node = Node(None, None)
+            values, counts = np.unique(y, return_counts=True)
+            node.value = values[np.argmax(counts)]
+            return node
+
         # Splitting the dataset into left and right
         left_mask = X[:, best_feature] <= best_threshold
         right_mask = X[:, best_feature] > best_threshold
@@ -77,28 +85,40 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         if self.max_depth == None:
             self.max_depth = np.inf
 
+        self.classes_ = np.unique(y)
         self.root = self._split(X, y, 0)
 
         return self
 
     def predict(self, X):
-        """
-        Takes a dataset X as input and returns predicted labels, y.
-        """
+        """ Takes a dataset X as input and returns predicted labels y """
 
         return np.array([self._traverse(x, self.root) for x in X])
 
 
     def _traverse(self, x, node):
+        """ Helper function to traverse the tree for prediction """
         if node.is_leaf():
             return node.value
         if x[node.feature] <= node.threshold:
             return self._traverse(x, node.left)
         return self._traverse(x, node.right)
 
-    def show_tree(self):
-        """ Show the tree in human-readable form """
-        pass
+    def show_tree(self, node=None, depth=0):
+        """ Visualize the tree """
+        if node is None:
+            node = self.root
+
+        indent = "  " * depth
+        if node.is_leaf():
+            print(f"{indent}Predict: {node.value}")
+            return
+
+        print(f"{indent}Feature {node.feature} <= {node.threshold:.2f}?")
+        print(f"{indent}Left:")
+        self.show_tree(node.left, depth + 1)
+        print(f"{indent}Right:")
+        self.show_tree(node.right, depth + 1)
 
     def entropy(self, y):
         """ H(x) """
