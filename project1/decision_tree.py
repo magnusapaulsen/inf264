@@ -8,13 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Node:
-    def __init__(self, feature, threshold, left=None, right=None, value=None, root=None):
+    def __init__(self, feature, threshold, left=None, right=None, value=None):
         self.feature = feature
         self.threshold = threshold
         self.left = left
         self.right = right
         self.value = value
-        self.root = root
+        self.root = None
 
     def is_leaf(self):
         return self.value is not None
@@ -30,7 +30,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
 
         # Checking base case
         if depth >= self.max_depth or len(np.unique(y)) == 1 or np.all(X == X[0, :]):
-            node = Node(None, None)
+            node = Node(feature=None, threshold=None)
             values, counts = np.unique(y, return_counts=True)
             node.value = values[np.argmax(counts)]
             return node
@@ -58,7 +58,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
 
         # Check for 0 information gain
         if best_IG <= 0:
-            node = Node(None, None)
+            node = Node(feature=None, threshold=None)
             values, counts = np.unique(y, return_counts=True)
             node.value = values[np.argmax(counts)]
             return node
@@ -104,7 +104,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
             return self._traverse(x, node.left)
         return self._traverse(x, node.right)
 
-    def show_tree(self, node=None, depth=0):
+    def show_tree(self, node=None, depth=0, feature_names=None):
         """ Visualize the tree """
         if node is None:
             node = self.root
@@ -114,7 +114,8 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
             print(f"{indent}Predict: {node.value}")
             return
 
-        print(f"{indent}Feature {node.feature} <= {node.threshold:.2f}?")
+        feature_name = feature_names[node.feature] if feature_names is not None else node.feature
+        print(f"{indent}{feature_name} <= {node.threshold:.2f}?")
         print(f"{indent}Left:")
         self.show_tree(node.left, depth + 1)
         print(f"{indent}Right:")
@@ -156,8 +157,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         """ IG(x) = H(x) - H(y|x) or IG(x) = G(x) - G(y|x) """
         if self.criterion == "gini":
             return self.gini(y) - self.conditional_gini(y_left, y_right)
-        return self.entropy(y) - self.conditional_entropy(y_left, y_right)
-            
+        return self.entropy(y) - self.conditional_entropy(y_left, y_right)   
 
 if __name__ == '__main__':
     X, y = generate_synthetic_dataset(
