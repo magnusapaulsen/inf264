@@ -13,10 +13,9 @@ class Node:
         self.left = left
         self.right = right
         self.value = value
-        self.root = None
 
     def is_leaf(self):
-        """ Checks if a node is a leaf node or not, returns True of False """
+        """ Checks if a node is a leaf node or not, returns True or False """
         return self.value is not None
         
 
@@ -29,7 +28,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
     def _split(self, X, y, depth):
         """ Helper function which actually does the splitting """
         # Checking base case
-        if depth >= self.max_depth or len(np.unique(y)) == 1 or np.all(X == X[0, :]):
+        if depth >= self.max_depth_ or len(np.unique(y)) == 1 or np.all(X == X[0, :]):
             node = Node(feature=None, threshold=None)
             values, counts = np.unique(y, return_counts=True)
             node.value = values[np.argmax(counts)]
@@ -70,7 +69,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         X_left, y_left = X[left_mask], y[left_mask]
         X_right, y_right = X[right_mask], y[right_mask]
 
-        # Buildling the node
+        # Building the node
         node = Node(best_feature, best_threshold)
 
         # Recursing into left and right
@@ -81,17 +80,15 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return node
 
     def fit(self, X, y):
-        """ Kicks off the buidling of the decision tree """
-        if self.max_depth == None:
-            self.max_depth = np.inf
-
+        """ Kicks off the building of the decision tree """
+        self.max_depth_ = np.inf if self.max_depth is None else self.max_depth
         self.classes_ = np.unique(y)
         self.root = self._split(X, y, 0)
 
         return self
 
     def predict(self, X):
-        """ Takes a dataset, X, as input and returns predicted labels ,y """
+        """ Takes a dataset, X, as input and returns predicted labels, y """
         return np.array([self._traverse(x, self.root) for x in X])
 
 
@@ -121,7 +118,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         self.show_tree(node.right, depth+1, feature_names=feature_names)
 
     def entropy(self, y):
-        """ H(x) """
+        """ H(y) """
         _, counts = np.unique(y, return_counts=True)
         p = counts/len(y)
         return -np.sum(p*np.log2(p))
@@ -137,7 +134,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return (lyl/ly * h_left + (lyr/ly) * h_right)
 
     def gini(self, y):
-        """ G(x) """
+        """ G(y) """
         _, counts = np.unique(y, return_counts=True)
         p = counts/len(y)
         return np.sum(p*(1-p))
@@ -153,13 +150,13 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return (lyl/ly * g_left + (lyr/ly) * g_right)
 
     def information_gain(self, y, y_left, y_right):
-        """ IG(x) = H(x) - H(y|x) or IG(x) = G(x) - G(y|x) """
+        """ IG = H(y) - H(y|x) or IG = G(y) - G(y|x) """
         if self.criterion == "gini":
             return self.gini(y) - self.conditional_gini(y_left, y_right)
         return self.entropy(y) - self.conditional_entropy(y_left, y_right)   
 
 if __name__ == '__main__':
-    """ This was just used for testing """
+    # This was just used for testing
     from synthetic_dataset import generate_synthetic_dataset
     X, y = generate_synthetic_dataset(
         n_samples=100,
