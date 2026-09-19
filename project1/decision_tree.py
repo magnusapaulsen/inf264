@@ -2,10 +2,8 @@
 Decision tree with Iterative Dichotomizer 3 (ID3) learning algorithm.
 """
 
-from synthetic_dataset import generate_synthetic_dataset
 from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Node:
     def __init__(self, feature, threshold, left=None, right=None, value=None):
@@ -117,9 +115,9 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         feature_name = feature_names[node.feature] if feature_names is not None else node.feature
         print(f"{indent}{feature_name} <= {node.threshold:.2f}?")
         print(f"{indent}Left:")
-        self.show_tree(node.left, depth + 1)
+        self.show_tree(node.left, depth+1, feature_names=feature_names)
         print(f"{indent}Right:")
-        self.show_tree(node.right, depth + 1)
+        self.show_tree(node.right, depth+1, feature_names=feature_names)
 
     def entropy(self, y):
         """ H(x) """
@@ -160,6 +158,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return self.entropy(y) - self.conditional_entropy(y_left, y_right)   
 
 if __name__ == '__main__':
+    from synthetic_dataset import generate_synthetic_dataset
     X, y = generate_synthetic_dataset(
         n_samples=100,
         n_features=19,

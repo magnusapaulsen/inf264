@@ -1,16 +1,22 @@
+import numpy as np
+
 def permutation_importance(model, X, y, metric, n_repeats, seed):
-    """
-    For each feature in the dataset, we shuffle a features values n-times, measuring the performance drop, then move on to the next feature.
-    We use accuracy as our metric.
-    We test it on our test dataset. This let's us see which features are important for generalization, as opposed to checking on training data.
-    We should use n_repeats=30
-    (importance)
-    i = s - 1/k sum[1,k](sk)
-    Our real accuracy score minus the mean accuracy score of the permuted version
-    This is the importance of a feature. We do this for all features.
-    """
-    # Metric is accuracy
-    # Use test data
-    # 30 repeats
+    rng = np.random.default_rng(seed=seed)
+    y_pred = model.predict(X)
+    reference_score = metric(y, y_pred)
+
+    importances = []
+
+    for j in range(len(X[0])):
+        importances_j = []
+        for k in range(n_repeats):
+            X_copy = X.copy()
+            rng.shuffle(X_copy[:, j])
+            y_pred = model.predict(X_copy)
+            score_jk = metric(y, y_pred)
+            importance = reference_score - score_jk
+            importances_j.append(importance)
+
+        importances.append(sum(importances_j)/len(importances_j))
     
-    pass
+    return np.array(importances)
