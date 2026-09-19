@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
 
 class Node:
+    """ This is the class definition of nodes that make up my decision tree """
     def __init__(self, feature, threshold, left=None, right=None, value=None):
         self.feature = feature
         self.threshold = threshold
@@ -15,17 +16,18 @@ class Node:
         self.root = None
 
     def is_leaf(self):
+        """ Checks if a node is a leaf node or not, returns True of False """
         return self.value is not None
         
 
 class DecisionTree(BaseEstimator, ClassifierMixin):
+    """ This is the class definition for my model """
     def __init__(self, criterion="entropy", max_depth=None):
         self.criterion = criterion
         self.max_depth = max_depth
 
     def _split(self, X, y, depth):
-        """ Helper function which actually does the splitting"""
-
+        """ Helper function which actually does the splitting """
         # Checking base case
         if depth >= self.max_depth or len(np.unique(y)) == 1 or np.all(X == X[0, :]):
             node = Node(feature=None, threshold=None)
@@ -71,11 +73,11 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         # Buildling the node
         node = Node(best_feature, best_threshold)
 
-        # Recurising into left and right
+        # Recursing into left and right
         node.left = self._split(X_left, y_left, depth + 1)
         node.right = self._split(X_right, y_right, depth + 1)
 
-        # Finally returning the subtree
+        # Finally, returning this subtree
         return node
 
     def fit(self, X, y):
@@ -89,8 +91,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return self
 
     def predict(self, X):
-        """ Takes a dataset X as input and returns predicted labels y """
-
+        """ Takes a dataset, X, as input and returns predicted labels ,y """
         return np.array([self._traverse(x, self.root) for x in X])
 
 
@@ -158,6 +159,7 @@ class DecisionTree(BaseEstimator, ClassifierMixin):
         return self.entropy(y) - self.conditional_entropy(y_left, y_right)   
 
 if __name__ == '__main__':
+    """ This was just used for testing """
     from synthetic_dataset import generate_synthetic_dataset
     X, y = generate_synthetic_dataset(
         n_samples=100,

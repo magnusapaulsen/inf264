@@ -1,6 +1,8 @@
 import numpy as np
 
 def permutation_importance(model, X, y, metric, n_repeats, seed):
+    """ Does the permutation importance algorithm on a fitted model and returns an array of importances of all features """
+
     rng = np.random.default_rng(seed=seed)
     y_pred = model.predict(X)
     reference_score = metric(y, y_pred)
