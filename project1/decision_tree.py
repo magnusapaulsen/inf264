@@ -2,7 +2,7 @@
 Decision tree with Iterative Dichotomizer 3 (ID3) learning algorithm.
 """
 
-from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.base import ClassifierMixin, BaseEstimator
 import numpy as np
 
 class Node:
@@ -19,7 +19,7 @@ class Node:
         return self.value is not None
         
 
-class DecisionTree(BaseEstimator, ClassifierMixin):
+class DecisionTree(ClassifierMixin, BaseEstimator):
     """ This is the class definition for my model """
     def __init__(self, criterion="entropy", max_depth=None):
         self.criterion = criterion
